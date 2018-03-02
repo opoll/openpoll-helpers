@@ -58,6 +58,13 @@
         "type": "object"
       },
       "uniqueItems": true
+    },
+
+    "respondentPublicKey": {
+      "type": "string",
+      "description": "the public key of the respondent",
+      "minLength": 0,
+      "maxLength": 5000
     }
   },
 
@@ -66,7 +73,6 @@
     "pollHash",
     "timestamp",
     "respondentAddr",
-    "rewardAddr",
     "signature",
     "responseData",
     "respondentDemographics"

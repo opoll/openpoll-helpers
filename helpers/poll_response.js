@@ -1,7 +1,9 @@
 
 // Imports
 var crypto = require('crypto');
+var NodeRSA = require('node-rsa');
 var schemaValidator = require('jsonschema').validate;
+var helper_generic = require('./blockchain_generic');
 
 // Create the library
 var lib = {};
@@ -19,13 +21,29 @@ lib.validateSchema = function( obj ) {
 }
 
 /*
+  Returns fields which are baked into the hash
+*/
+lib.bakedFields = function( pollResponseObj ) {
+  return {
+    hash: pollResponseObj.responseHash,
+    fields: {
+      pollHash: pollResponseObj.pollHash,
+      timestamp: pollResponseObj.timestamp,
+      respondentAddr: pollResponseObj.respondentAddr,
+      rewardAddr: pollResponseObj.rewardAddr,
+      responses: pollResponseObj.responseData,
+      respondentDemographics: pollResponseObj.respondentDemographics
+    }
+  }
+}
+
+/*
   This function produces a hash representing this poll response
   A poll response includes the following fields:
     * pollHash
     * timestamp
     * respondentAddr
     * rewardAddr
-    * signature
     * respondeData
     * respondentDemographics
 */
@@ -35,8 +53,7 @@ lib.computeResponseHash = function( pollResponseObj, digestType = "hex" ) {
             .update( pollResponseObj.pollHash )
             .update( pollResponseObj.timestamp.toString() )
             .update( pollResponseObj.respondentAddr )
-            .update( pollResponseObj.rewardAddr )
-            .update( pollResponseObj.signature );
+            .update( pollResponseObj.rewardAddr || "" );
 
   // Update the HMAC with poll response data
   pollResponseObj.responseData.forEach( function( responseStr ) {
@@ -50,6 +67,85 @@ lib.computeResponseHash = function( pollResponseObj, digestType = "hex" ) {
 
   // Grab a hex digest and return
   return hmac.digest( digestType );
+}
+
+/*
+  This function takes a poll response and validates the signature of the
+  response corresponds to the public address. This function requires the
+  public key of the respondent.
+*/
+lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null ) {
+  // If no public key could be found..
+  if( (respondentPubKeyData == undefined) && (pollResponseObj.respondentPublicKey == undefined) ) {
+    throw {
+      name: "UnknownRespondentPublicKey",
+      message: "unable to locate the public key of the respondent"
+    };
+  }
+
+  // Convert the public key to an address
+  var respondentAddr = helper_generic.publicKeyToAddress( respondentPubKeyData || pollResponseObj.respondentPublicKey );
+
+  // If no response hash was provided, compute one
+  if( pollResponseObj.responseHash === undefined ) {
+    pollResponseObj.responseHash = lib.computeResponseHash( pollResponseObj );
+  }
+
+  // Create an RSA Public Key Object
+  var respondentPubKey = (new NodeRSA());
+  respondentPubKey.importKey(pollResponseObj.respondentPublicKey, 'pkcs8-public-pem');
+
+  /*
+    To prevent a valid respondent from spoofing a response from another user,
+    we ensure the respondentAddr listed in the response object aligns with the
+    protected public key.
+  */
+  if( pollResponseObj.respondentAddr !== respondentAddr ) {
+    throw {
+      name: "InvalidRespondentAddress",
+      message: "the address specified in the response does not correspond to the provided public key"
+    };
+  }
+
+  /*
+    To verify the signature itself we ensure the respondent public key authored the signature
+    specified in the response object, and the signature was derived from the response hash.
+  */
+  if( !respondentPubKey.verify( pollResponseObj.responseHash, pollResponseObj.signature, null, 'hex' ) ) {
+    throw {
+      name: "InvalidSignature",
+      message: "the signature provided does not match this response or was not authored by the respondent"
+    };
+  }
+
+  // Success
+  return true;
+}
+
+/*
+  Create a signature for a given poll with the provided private key
+*/
+lib.sign = function( pollResponseObj, privateKeyData, rewardAddr = undefined ) {
+  // Import the private key
+  var respondentPrivKey = new NodeRSA();
+  respondentPrivKey.importKey( privateKeyData, "pkcs8-private-pem" );
+
+  // Derive the public key
+  var publicPlaintext = respondentPrivKey.exportKey( 'pkcs8-public-pem' );
+
+  // Calculate the address
+  var respondentAddr = helper_generic.publicKeyToAddress( publicPlaintext );
+
+  // Update the poll response object..
+  pollResponseObj.respondentPublicKey = publicPlaintext;
+  pollResponseObj.respondentAddr = respondentAddr;
+  pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
+
+  // Recompute the response hash
+  pollResponseObj.responseHash = lib.computeResponseHash( pollResponseObj );
+
+  // Compute a signature
+  pollResponseObj.signature = respondentPrivKey.sign( pollResponseObj.responseHash, 'hex' );
 }
 
 // Export the library
