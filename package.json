@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "cover": "istanbul cover _mocha"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE.TXT",
@@ -14,6 +15,7 @@
   },
   "devDependencies": {
     "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
     "mocha": "^5.0.1"
   }
 }
