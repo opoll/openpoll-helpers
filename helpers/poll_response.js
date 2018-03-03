@@ -10,7 +10,7 @@ var lib = {};
 
 // Path to a block schema
 lib.BLOCK_SCHEMA_PATH = "/poll/response";
-lib.BLOCK_SCHEMA = require( "../schemas/0.1" + lib.BLOCK_SCHEMA_PATH + ".json" );
+lib.BLOCK_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.BLOCK_SCHEMA_PATH + ".json" );
 
 /*
   Given a main chain block, this function will return true if the input

@@ -5,6 +5,9 @@ var crypto = require('crypto');
 // Create the library
 var lib = {};
 
+// Schema Version
+lib.SCHEMA_VERSION = "0.1";
+
 /*
   Given a public key, this function converts the public key into an
   address
