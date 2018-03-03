@@ -56,7 +56,8 @@ lib.getFundingDistribution = function( poll ) {
 }
 
 /*
-  Returns a hash identifier of a poll including the following fields:
+  Returns a an array of ordered hash fields which are used in composing
+  a hash which represents this poll
     1) timestamp
     2) expiry
     3) totalFunding
@@ -64,22 +65,29 @@ lib.getFundingDistribution = function( poll ) {
     5) imageId
     6) questions
 */
-lib.hash = function( poll, digestType = 'hex' ) {
-  // Create HMAC with trivial fields
-  var hmac = crypto.createHmac( 'sha256', '' )
-                    .update( poll.timestamp.toString() )
-                    .update( poll.expiry.toString() )
-                    .update( poll.totalFunding.toString() )
-                    .update( poll.maxRespondents.toString() )
-                    .update( poll.imageId.toString() );
+lib.orderedHashFields = function( poll ) {
+  var arr = [
+    poll.timestamp.toString(),
+    poll.expiry.toString(),
+    poll.totalFunding.toString(),
+    poll.maxRespondents.toString(),
+    poll.imageId.toString()
+  ];
 
   // Loop through all questions in the poll and include them
   poll.questions.forEach( function( questionText ) {
-    hmac = hmac.update( questionText );
+    arr.push( questionText );
   } );
 
+  return arr;
+}
+
+/*
+  Returns a hash identifier of a poll
+*/
+lib.hash = function( poll, digestType = 'hex' ) {
   // Update the hash on the poll object
-  poll.hash = hmac.digest( digestType );
+  poll.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( poll ), digestType );
 
   // Return the hash
   return poll.hash;
