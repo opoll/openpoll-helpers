@@ -7,9 +7,9 @@ var tLib = helpers.poll_response;
 var NodeRSA = require('node-rsa');
 
 // Some of our factories
-var validPollResponse = require('./schemas/0.1/validPollResponse.json');
+var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
 
-describe( 'poll response openpoll_helpers', function() {
+describe( 'poll response helper', function() {
 
   it( 'should reference the /poll/response schema', function( done ) {
     expect( tLib.BLOCK_SCHEMA_PATH ).to.equal( "/poll/response" );

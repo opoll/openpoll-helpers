@@ -1,0 +1,11 @@
+{
+  "hash": "b519ad1d6131f1b0501a969fc951f1df40fb2c7bbdeb7edf5353d2201cb8dbca",
+  "timestamp": 1520015220,
+  "expiry": 1527811200,
+  "totalFunding": 100,
+  "maxRespondents": 1000,
+  "questions": [
+    "Do you support Donald Trump?"
+  ],
+  "imageId": 1
+}
