@@ -47,7 +47,7 @@ lib.bakedFields = function( pollResponseObj ) {
     * respondeData
     * respondentDemographics
 */
-lib.computeResponseHash = function( pollResponseObj, digestType = "hex" ) {
+lib.hash = function( pollResponseObj, digestType = "hex" ) {
   // Create HMAC with basic block information
   var hmac = crypto.createHmac( 'sha256', '' )
             .update( pollResponseObj.pollHash )
@@ -63,6 +63,23 @@ lib.computeResponseHash = function( pollResponseObj, digestType = "hex" ) {
   // Update the HMAC with deomgraphic information
   pollResponseObj.respondentDemographics.forEach( function( demographicObj ) {
     // TODO: Incorporate the demographic information into the hash
+  } );
+
+  // Grab a hex digest and return
+  return hmac.digest( digestType );
+}
+
+/*
+  Given an array of poll responses, this function produces a hash to
+  represet the ordered set of responses
+*/
+lib.hashResponses = function( pollResponseArr, digestType = "hex" ) {
+  // Create HMAC with basic block information
+  var hmac = crypto.createHmac( 'sha256', '' );
+
+  // Loop through all provided poll responses
+  pollResponseArr.forEach( function( pollObj ) {
+    hmac = hmac.update( lib.hash( pollObj ) );
   } );
 
   // Grab a hex digest and return
@@ -88,7 +105,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
 
   // If no response hash was provided, compute one
   if( pollResponseObj.responseHash === undefined ) {
-    pollResponseObj.responseHash = lib.computeResponseHash( pollResponseObj );
+    pollResponseObj.responseHash = lib.hash( pollResponseObj );
   }
 
   // Create an RSA Public Key Object
@@ -142,7 +159,7 @@ lib.sign = function( pollResponseObj, privateKeyData, rewardAddr = undefined ) {
   pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
 
   // Recompute the response hash
-  pollResponseObj.responseHash = lib.computeResponseHash( pollResponseObj );
+  pollResponseObj.responseHash = lib.hash( pollResponseObj );
 
   // Compute a signature
   pollResponseObj.signature = respondentPrivKey.sign( pollResponseObj.responseHash, 'hex' );
