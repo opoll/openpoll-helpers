@@ -2,6 +2,7 @@
 // Imports
 var crypto = require('crypto');
 var schemaValidator = require('jsonschema').validate;
+var helper_generic = require('./blockchain_generic');
 
 // Create the library
 var mainchainHelpers = {};
