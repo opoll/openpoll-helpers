@@ -55,7 +55,7 @@
   },
 
   "required": [
-    "pollHash",
+    "hash",
     "timestamp",
     "expiry",
     "maxRespondents",

@@ -7,12 +7,26 @@ var tLib = helpers.poll;
 // Factories
 var validPollSimple = require('./schemas/0.1/validPollSimple.json' );
 
-console.log( tLib.getFundingDistribution( validPollSimple ) );
-
 describe( 'poll helper', function() {
 
   it( 'should contain a reference to the /poll/poll schema', function( done ) {
     expect( tLib.POLL_SCHEMA_PATH ).to.equal( "/poll/poll" );
+    done();
+  } );
+
+  it( 'should validate a valid schema', function( done ) {
+    expect( tLib.validateSchema( validPollSimple ).errors.length ).to.equal(0);
+    done();
+  } );
+
+  it( 'should not validate objects not conforming to schema', function( done ) {
+    var poll = Object.assign( {}, validPollSimple );
+    poll.timestamp = "123123123";
+    poll.imageId = "5";
+    poll.questions = undefined;
+    poll.maxRespondents = -6;
+    poll.totalFunding = -1000;
+    expect( tLib.validateSchema( poll ).errors.length ).to.equal(5);
     done();
   } );
 

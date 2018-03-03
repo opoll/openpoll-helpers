@@ -15,12 +15,28 @@ lib.POLL_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.P
 // Percentage dedicated to the network
 lib.NETWORK_FUND_PERCENT = 0.15;
 
+/*
+  Given a main chain block, this function will return true if the input
+  conforms to schema and false if the schema is invalid
+*/
+lib.validateSchema = function( obj ) {
+  return schemaValidator( obj, lib.POLL_SCHEMA );
+}
+
 // Returns if a poll is expired
 lib.isExpired = function( poll ) {
   return (poll.expiry < (new Date() / 1000));
 }
 
-// Returns the funding distribution of the poll
+/*
+  Returns the funding distribution of the poll
+  | respondent._total = the total POL given to respondents
+  | respondent.individual = POL given to an individual respondent
+  | network._total = total POL spent on network costs
+  | network.shard = total POL spent on all shards
+  | network.shard_resp = POL given to miners per response incorporated in a shard block
+  | network.mcif = the Main Chain Information Fee
+*/
 lib.getFundingDistribution = function( poll ) {
   var networkPartition = poll.totalFunding * lib.NETWORK_FUND_PERCENT;
   var respondentPartition = poll.totalFunding - networkPartition;
@@ -33,6 +49,7 @@ lib.getFundingDistribution = function( poll ) {
     "network": {
       "_total": networkPartition,
       "shard": networkPartition * 0.75,
+      "shard_resp": (networkPartition * 0.75) / poll.maxRespondents,
       "mcif": networkPartition * 0.25
     }
   };
