@@ -65,8 +65,11 @@ lib.hash = function( pollResponseObj, digestType = "hex" ) {
     // TODO: Incorporate the demographic information into the hash
   } );
 
+  // Update the local hash
+  pollResponseObj.responseHash = hmac.digest( digestType );
+
   // Grab a hex digest and return
-  return hmac.digest( digestType );
+  return pollResponseObj.responseHash;
 }
 
 /*
@@ -103,14 +106,15 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
   // Convert the public key to an address
   var respondentAddr = helper_generic.publicKeyToAddress( respondentPubKeyData || pollResponseObj.respondentPublicKey );
 
-  // If no response hash was provided, compute one
-  if( pollResponseObj.responseHash === undefined ) {
-    pollResponseObj.responseHash = lib.hash( pollResponseObj );
-  }
+  /*
+    Because the signature verification is intrinsically related to the
+    response hash, we will force recompute a response hash to ensure integrity
+  */
+  pollResponseObj.responseHash = lib.hash( pollResponseObj );
 
   // Create an RSA Public Key Object
   var respondentPubKey = (new NodeRSA());
-  respondentPubKey.importKey(pollResponseObj.respondentPublicKey, 'pkcs8-public-pem');
+  respondentPubKey.importKey(respondentPubKeyData || pollResponseObj.respondentPublicKey, 'pkcs8-public-pem');
 
   /*
     To prevent a valid respondent from spoofing a response from another user,
