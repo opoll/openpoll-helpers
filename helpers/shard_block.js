@@ -51,7 +51,7 @@ lib.hash = function( shardBlockObj, digestType = "hex" ) {
   Returns true if a given shard block is the genesis block
 */
 lib.isGenesis = function( shardBlockObj ) {
-  return ( shardBlockObj.prevHash == "0".repeat(64) );
+  return ( shardBlockObj.prevHash === "0".repeat(64) );
 }
 
 /*
