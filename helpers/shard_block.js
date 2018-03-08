@@ -35,13 +35,13 @@ lib.validateSchema = function( obj ) {
 lib.hash = function( shardBlockObj, digestType = "hex" ) {
   // Create HMAC with basic block information
   var hmac = crypto.createHash( 'sha256' )
-            .update( shardBlockObj.blockId )
+            .update( shardBlockObj.blockId.toString() )
             .update( shardBlockObj.pollHash )
-            .update( shardBlockObj.timestamp )
+            .update( shardBlockObj.timestamp.toString() )
             .update( shardBlockObj.prevHash )
             .update( helper_poll_response.hashResponses( shardBlockObj.responses ) )
             .update( shardBlockObj.minerAddress )
-            .update( shardBlockObj.nonce );
+            .update( shardBlockObj.nonce.toString() );
 
   // Grab a hex digest and return
   return hmac.digest( digestType );
