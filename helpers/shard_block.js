@@ -34,7 +34,7 @@ lib.validateSchema = function( obj ) {
 */
 lib.hash = function( shardBlockObj, digestType = "hex" ) {
   // Create HMAC with basic block information
-  var hmac = crypto.createHmac( 'sha256', '' )
+  var hmac = crypto.createHash( 'sha256' )
             .update( shardBlockObj.blockId )
             .update( shardBlockObj.pollHash )
             .update( shardBlockObj.timestamp )
