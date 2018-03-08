@@ -30,6 +30,47 @@ describe( 'poll helper', function() {
     done();
   } );
 
+  describe( 'genesis block generation', function() {
+
+    it( 'should contain the same poll id', function( done ) {
+      var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+      expect( genesisBlock.pollHash ).to.equal( validPollSimple.hash );
+      done();
+    } );
+
+    it( 'should contain 0 responses', function( done ) {
+      var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+      expect( genesisBlock.responses.length ).to.equal( 0 );
+      done();
+    } );
+
+    it( 'should have a nonce of 0', function( done ) {
+      var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+      expect( genesisBlock.nonce ).to.equal( 0 );
+      done();
+    } );
+
+    it( 'should return the correct hash', function( done ) {
+      var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+      var _hash = genesisBlock.hash;
+      expect( helpers.shard_block.hash( genesisBlock) ).to.equal( _hash );
+      done();
+    } );
+
+    it( 'should be considered the genesis block', function( done ) {
+      var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+      expect( helpers.shard_block.isGenesis( genesisBlock ) ).to.be.true;
+      done();
+    } );
+
+      it( 'should contain the same timestamp as the poll', function( done ) {
+        var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
+        expect( genesisBlock.timestamp ).to.equal( validPollSimple.timestamp );
+        done();
+      } );
+
+  } );
+
   describe( 'poll expiration functionality', function() {
 
     it( 'should record the poll as expired if after expiry date', function( done ) {

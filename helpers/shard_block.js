@@ -43,8 +43,11 @@ lib.hash = function( shardBlockObj, digestType = "hex" ) {
             .update( shardBlockObj.minerAddress )
             .update( shardBlockObj.nonce.toString() );
 
+  // Add the hash to the object itself
+  shardBlockObj.hash = hmac.digest( digestType );
+
   // Grab a hex digest and return
-  return hmac.digest( digestType );
+  return shardBlockObj.hash;
 }
 
 /*
