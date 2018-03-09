@@ -5,6 +5,7 @@ var helpers = require('../openpoll_helpers')
 var tLib = helpers.poll;
 
 // Factories
+var factory = require('../helpers/factory');
 var validPollSimple = require('./schemas/0.1/validPollSimple.json' );
 
 describe( 'poll helper', function() {
