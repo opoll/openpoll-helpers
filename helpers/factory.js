@@ -4,6 +4,7 @@ var factory = {};
 
 // Helper Imports
 var PollHelpers = require( './poll' );
+var ShardBlockHelpers = require( './shard_block' );
 
 /*
   Generate a /poll/poll object
