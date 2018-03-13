@@ -171,7 +171,10 @@ lib.sign = function( pollResponseObj, privateKeyData, rewardAddr = undefined ) {
   pollResponseObj.responseHash = lib.hash( pollResponseObj );
 
   // Compute a signature
-  pollResponseObj.signature = respondentPrivKey.sign( pollResponseObj.responseHash, 'hex' );
+  const sign = crypto.createSign("RSA-SHA256");
+  sign.update(pollResponseObj.responseHash);
+  pollResponseObj.signature = sign.sign(privateKeyData, "hex");
+  //pollResponseObj.signature = respondentPrivKey.sign( pollResponseObj.responseHash, 'hex' );
 }
 
 // Export the library
