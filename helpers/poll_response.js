@@ -117,10 +117,6 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
   */
   pollResponseObj.responseHash = lib.hash( pollResponseObj );
 
-  // Create an RSA Public Key Object
-  var respondentPubKey = (new NodeRSA());
-  respondentPubKey.importKey(respondentPubKeyData || pollResponseObj.respondentPublicKey, 'pkcs8-public-pem');
-
   /*
     To prevent a valid respondent from spoofing a response from another user,
     we ensure the respondentAddr listed in the response object aligns with the
@@ -137,7 +133,11 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
     To verify the signature itself we ensure the respondent public key authored the signature
     specified in the response object, and the signature was derived from the response hash.
   */
-  if( !respondentPubKey.verify( pollResponseObj.responseHash, pollResponseObj.signature, null, 'hex' ) ) {
+
+  const verify = crypto.createVerify("sha256");
+  verify.update(pollResponseObj.responseHash);
+
+  if (!verify.verify(respondentPubKeyData || pollResponseObj.respondentPublicKey, pollResponseObj.signature, "hex")) {
     throw {
       name: "InvalidSignature",
       message: "the signature provided does not match this response or was not authored by the respondent"
