@@ -4,7 +4,8 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var helpers = require('../openpoll_helpers')
 var tLib = helpers.poll_response;
-var NodeRSA = require('node-rsa');
+const privateKeyPem = fs.readFileSync("./private.key");
+const publicKeyPem = fs.readFileSync("./public.key");
 
 // Some of our factories
 var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
@@ -12,7 +13,7 @@ var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
 describe( 'poll response helper', function() {
 
   it( 'should reference the /poll/response schema', function( done ) {
-    expect( tLib.BLOCK_SCHEMA_PATH ).to.equal( "/poll/response" );
+    expect( tLib.BLOCK_SCHEMA.id ).to.equal( "https://schemas.openpoll.io/0.1/poll/response.json" );
     done();
   } );
 
@@ -82,57 +83,37 @@ describe( 'poll response helper', function() {
 
   describe( 'signature creation', function() {
 
-    it( 'creates a signature', function( done ) {
-      fs.readFile( "./private.key", function( error, privKeyData ) {
-        var pollResp = Object.assign( {}, validPollResponse );
-        pollResp.signature = undefined;
-        tLib.sign( pollResp, privKeyData );
-        expect( pollResp.signature ).to.exist
-        done();
-      } );
+    it( 'creates a signature', function( ) {
+      var pollResp = Object.assign( {}, validPollResponse );
+      pollResp.signature = undefined;
+      tLib.sign( pollResp, privateKeyPem, publicKeyPem );
+      expect( pollResp.signature ).to.exist
     } );
 
-    it( 'creates a valid signature', function( done ) {
-      fs.readFile( "./private.key", function( error, privKeyData ) {
-        var pollResp = Object.assign( {}, validPollResponse );
-        pollResp.signature = undefined;
-        tLib.sign( pollResp, privKeyData );
-        expect( tLib.validateSignature( pollResp ) ).to.be.true
-        done();
-      } );
+    it( 'creates a valid signature', function( ) {
+      var pollResp = Object.assign( {}, validPollResponse );
+      pollResp.signature = undefined;
+      tLib.sign( pollResp, privateKeyPem, publicKeyPem );
+      expect( tLib.validateSignature( pollResp ) ).to.be.true
     } );
 
-    it( 'changes signature when data changes', function( done ) {
-      fs.readFile( "./private.key", function( error, privKeyData ) {
-        var pollResp = Object.assign( {}, validPollResponse );
-        tLib.sign( pollResp, privKeyData );
-        var oldSig = pollResp.signature;
-        pollResp.timestamp = pollResp.timestamp + 1;
-        tLib.sign( pollResp, privKeyData );
-        expect( pollResp.signature ).to.not.equal( oldSig );
-        done();
-      } );
+    it( 'changes signature when data changes', function( ) {
+      var pollResp = Object.assign( {}, validPollResponse );
+      tLib.sign( pollResp, privateKeyPem, publicKeyPem );
+      var oldSig = pollResp.signature;
+      pollResp.timestamp = pollResp.timestamp + 1;
+      tLib.sign( pollResp, privateKeyPem, publicKeyPem );
+      expect( pollResp.signature ).to.not.equal( oldSig );
     } );
 
-    it( 'creates a signature based off the provided private key', function( done ) {
-      fs.readFile( "./private.key", function( error, privKeyData ) {
-        var pollResp = Object.assign( {}, validPollResponse );
+    it( 'creates a signature based off the provided private key', function( ) {
+      var pollResp = Object.assign( {}, validPollResponse );
 
-        // Create a signature
-        tLib.sign( pollResp, privKeyData );
+      // Create a signature
+      tLib.sign( pollResp, privateKeyPem, publicKeyPem );
 
-        // Load the private key we used in creation into NodeRSA
-        var respondentPrivKey = new NodeRSA();
-        respondentPrivKey.importKey( privKeyData, "pkcs8-private-pem" );
-
-        // Calculate the public key from the provided private key
-        var publicPlaintext = respondentPrivKey.exportKey( 'pkcs8-public-pem' );
-
-        // Validate the signature against the provided public key
-        expect( tLib.validateSignature( pollResp, publicPlaintext ) ).to.be.true
-
-        done();
-      } );
+      // Validate the signature against the provided public key
+      expect( tLib.validateSignature( pollResp, publicKeyPem ) ).to.be.true
     } );
 
   } );
