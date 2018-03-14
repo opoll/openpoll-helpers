@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@openpoll/schemas@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@openpoll/schemas/-/schemas-1.0.9.tgz#658e389d2242ac8a4ad4bb2f6c40a0a547104ee9"
+  dependencies:
+    jsonschema "^1.2.2"
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
@@ -27,10 +33,6 @@ argparse@^1.0.7:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
   dependencies:
     sprintf-js "~1.0.2"
-
-asn1@0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.3.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
 
 assertion-error@^1.0.1:
   version "1.1.0"
@@ -319,12 +321,6 @@ mocha@^5.0.1:
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
-
-node-rsa@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/node-rsa/-/node-rsa-0.4.2.tgz#d6391729ec16a830ed5a38042b3157d2d5d72530"
-  dependencies:
-    asn1 "0.2.3"
 
 nopt@3.x:
   version "3.0.6"
