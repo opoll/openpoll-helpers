@@ -1,23 +1,21 @@
 
 // Imports
 var crypto = require('crypto');
-var NodeRSA = require('node-rsa');
-var schemaValidator = require('jsonschema').validate;
 var helper_generic = require('./blockchain_generic');
+const { schemas, validator } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
 
 // Path to a block schema
-lib.BLOCK_SCHEMA_PATH = "/poll/response";
-lib.BLOCK_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.BLOCK_SCHEMA_PATH + ".json" );
+lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].poll.response;
 
 /*
   Given a main chain block, this function will return true if the input
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return schemaValidator( obj, lib.BLOCK_SCHEMA );
+  return validator.validate(obj, lib.BLOCK_SCHEMA);
 }
 
 /*
@@ -151,19 +149,12 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
 /*
   Create a signature for a given poll with the provided private key
 */
-lib.sign = function( pollResponseObj, privateKeyData, rewardAddr = undefined ) {
-  // Import the private key
-  var respondentPrivKey = new NodeRSA();
-  respondentPrivKey.importKey( privateKeyData, "pkcs8-private-pem" );
-
-  // Derive the public key
-  var publicPlaintext = respondentPrivKey.exportKey( 'pkcs8-public-pem' );
-
+lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddr = undefined ) {
   // Calculate the address
-  var respondentAddr = helper_generic.publicKeyToAddress( publicPlaintext );
+  var respondentAddr = helper_generic.publicKeyToAddress( publicKeyData );
 
   // Update the poll response object..
-  pollResponseObj.respondentPublicKey = publicPlaintext;
+  pollResponseObj.respondentPublicKey = publicKeyData;
   pollResponseObj.respondentAddr = respondentAddr;
   pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
 

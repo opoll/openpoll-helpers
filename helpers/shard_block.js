@@ -1,23 +1,22 @@
 
 // Imports
 var crypto = require('crypto');
-var schemaValidator = require('jsonschema').validate;
 var helper_generic = require('./blockchain_generic');
 var helper_poll_response = require('./poll_response');
+const { schemas, validator } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
 
 // Path to a block schema
-lib.BLOCK_SCHEMA_PATH = "/shard/block";
-lib.BLOCK_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.BLOCK_SCHEMA_PATH + ".json" );
+lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].shard.block;
 
 /*
   Given a main chain block, this function will return true if the input
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return schemaValidator( obj, lib.BLOCK_SCHEMA );
+  return validator.validate(obj, lib.BLOCK_SCHEMA);
 }
 
 /*

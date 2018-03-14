@@ -1,8 +1,8 @@
 
 // Imports
 var crypto = require('crypto');
-var schemaValidator = require('jsonschema').validate;
 var helper_generic = require('./blockchain_generic');
+const { schemas, validator } = require("@openpoll/schemas");
 
 // Helper Imports
 var ShardBlockHelper = require( './shard_block' );
@@ -11,8 +11,7 @@ var ShardBlockHelper = require( './shard_block' );
 var lib = {};
 
 // Path to a block schema
-lib.POLL_SCHEMA_PATH = "/poll/poll";
-lib.POLL_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.POLL_SCHEMA_PATH + ".json" );
+lib.POLL_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].poll.poll;
 
 // Percentage dedicated to the network
 lib.NETWORK_FUND_PERCENT = 0.15;
@@ -22,7 +21,7 @@ lib.NETWORK_FUND_PERCENT = 0.15;
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return schemaValidator( obj, lib.POLL_SCHEMA );
+  return validator.validate(obj, lib.POLL_SCHEMA);
 }
 
 // Returns if a poll is expired
@@ -117,10 +116,10 @@ lib.orderedHashFields = function( poll ) {
 */
 lib.hash = function( poll, digestType = 'hex' ) {
   // Update the hash on the poll object
-  poll.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( poll ), digestType );
+  poll.pollHash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( poll ), digestType );
 
   // Return the hash
-  return poll.hash;
+  return poll.pollHash;
 }
 
 // Export the library

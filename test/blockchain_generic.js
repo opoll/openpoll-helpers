@@ -3,6 +3,7 @@
 var expect = require('chai').expect;
 var helpers = require('../openpoll_helpers')
 var tLib = helpers.generic;
+const { loaded } = require("@openpoll/schemas");
 
 describe( 'blockchain generic helper', function() {
 

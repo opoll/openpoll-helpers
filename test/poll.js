@@ -11,7 +11,7 @@ var validPollSimple = require('./schemas/0.1/validPollSimple.json' );
 describe( 'poll helper', function() {
 
   it( 'should contain a reference to the /poll/poll schema', function( done ) {
-    expect( tLib.POLL_SCHEMA_PATH ).to.equal( "/poll/poll" );
+    expect( tLib.POLL_SCHEMA.id ).to.equal( "https://schemas.openpoll.io/0.1/poll/poll.json" );
     done();
   } );
 
@@ -35,7 +35,7 @@ describe( 'poll helper', function() {
 
     it( 'should contain the same poll id', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      expect( genesisBlock.pollHash ).to.equal( validPollSimple.hash );
+      expect( genesisBlock.pollHash ).to.equal( validPollSimple.pollHash );
       done();
     } );
 
@@ -53,7 +53,7 @@ describe( 'poll helper', function() {
 
     it( 'should return the correct hash', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      var _hash = genesisBlock.hash;
+      var _hash = genesisBlock.pollHash;
       expect( helpers.shard_block.hash( genesisBlock) ).to.equal( _hash );
       done();
     } );

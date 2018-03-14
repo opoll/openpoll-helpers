@@ -1,22 +1,21 @@
 
 // Imports
 var crypto = require('crypto');
-var schemaValidator = require('jsonschema').validate;
 var helper_generic = require('./blockchain_generic');
+const { schemas, validator } = require("@openpoll/schemas");
 
 // Create the library
 var mainchainHelpers = {};
 
 // Path to a block schema
-mainchainHelpers.BLOCK_SCHEMA_PATH = "/mainchain/block";
-mainchainHelpers.BLOCK_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + mainchainHelpers.BLOCK_SCHEMA_PATH + ".json" );
+mainchainHelpers.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].mainchain.block;
 
 /*
   Given a main chain block, this function will return true if the input
   conforms to schema and false if the schema is invalid
 */
 mainchainHelpers.validateBlockSchema = function( mainChainBlock ) {
-  return schemaValidator( mainChainBlock, mainchainHelpers.BLOCK_SCHEMA );
+  return validator.validate(mainChainBlock, mainchainHelpers.BLOCK_SCHEMA);
 }
 
 /*
