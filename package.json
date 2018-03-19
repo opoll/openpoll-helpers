@@ -1,5 +1,5 @@
 {
-  "name": "openpoll-helpers",
+  "name": "@openpoll/helpers",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,7 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE.TXT",
   "dependencies": {
-    "jsonschema": "^1.2.2",
-    "node-rsa": "^0.4.2"
+    "@openpoll/schemas": "^1.10.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
