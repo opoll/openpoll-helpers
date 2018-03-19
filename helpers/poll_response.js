@@ -23,7 +23,7 @@ lib.validateSchema = function( obj ) {
 */
 lib.bakedFields = function( pollResponseObj ) {
   return {
-    hash: pollResponseObj.responseHash,
+    hash: pollResponseObj.hash,
     fields: {
       pollHash: pollResponseObj.pollHash,
       timestamp: pollResponseObj.timestamp,
@@ -38,7 +38,7 @@ lib.bakedFields = function( pollResponseObj ) {
 /*
   This function produces a hash representing this poll response
   A poll response includes the following fields:
-    * pollHash
+    * hash
     * timestamp
     * respondentAddr
     * rewardAddr
@@ -69,10 +69,10 @@ lib.orderedHashFields = function( o ) {
 */
 lib.hash = function( o, digestType = "hex" ) {
   // Update the hash on the poll object
-  o.responseHash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
+  o.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
 
   // Return the hash
-  return o.responseHash;
+  return o.hash;
 }
 
 /*
@@ -113,7 +113,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
     Because the signature verification is intrinsically related to the
     response hash, we will force recompute a response hash to ensure integrity
   */
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   /*
     To prevent a valid respondent from spoofing a response from another user,
@@ -133,7 +133,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
   */
 
   const verify = crypto.createVerify("sha256");
-  verify.update(pollResponseObj.responseHash);
+  verify.update(pollResponseObj.hash);
 
   if (!verify.verify(respondentPubKeyData || pollResponseObj.respondentPublicKey, pollResponseObj.signature, "hex")) {
     throw {
@@ -159,11 +159,11 @@ lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddr 
   pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
 
   // Recompute the response hash
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   // Compute a signature
   const sign = crypto.createSign("RSA-SHA256");
-  sign.update(pollResponseObj.responseHash);
+  sign.update(pollResponseObj.hash);
   pollResponseObj.signature = sign.sign(privateKeyData, "hex");
 }
 

@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../index')
 var tLib = helpers.poll;
 
 // Factories
@@ -35,7 +35,7 @@ describe( 'poll helper', function() {
 
     it( 'should contain the same poll id', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      expect( genesisBlock.hash ).to.equal( validPollSimple.pollHash );
+      expect( genesisBlock.pollHash ).to.equal( validPollSimple.hash );
       done();
     } );
 
@@ -53,7 +53,7 @@ describe( 'poll helper', function() {
 
     it( 'should return the correct hash', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      var _hash = genesisBlock.pollHash;
+      var _hash = genesisBlock.hash;
       expect( helpers.shard_block.hash( genesisBlock) ).to.equal( _hash );
       done();
     } );
@@ -94,18 +94,18 @@ describe( 'poll helper', function() {
 
     it( 'should produce a correct poll hash', function( done ) {
       var poll = Object.assign( {}, validPollSimple );
-      var _hash = poll.pollHash;
+      var _hash = poll.hash;
       expect( tLib.hash( poll ) ).to.equal( _hash );
-      expect( poll.pollHash ).to.equal( _hash );
+      expect( poll.hash ).to.equal( _hash );
       done();
     } );
 
     it( 'should change when the content changes', function( done ) {
       var poll = Object.assign( {}, validPollSimple );
-      var _hash = poll.pollHash;
+      var _hash = poll.hash;
       poll.timestamp++;
       tLib.hash( poll );
-      expect( poll.pollHash ).to.not.equal( _hash );
+      expect( poll.hash ).to.not.equal( _hash );
       done();
     } );
 

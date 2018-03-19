@@ -53,6 +53,9 @@ lib.generateGenesisBlock = function( pollObj ) {
   // Hash the genesis block
   ShardBlockHelper.hash( POLL_GENESIS_BLOCK );
 
+  console.log( "we are hashing the genesis block!" );
+  console.log( POLL_GENESIS_BLOCK );
+
   // Return the genesis block
   return POLL_GENESIS_BLOCK;
 }
@@ -116,10 +119,10 @@ lib.orderedHashFields = function( poll ) {
 */
 lib.hash = function( poll, digestType = 'hex' ) {
   // Update the hash on the poll object
-  poll.pollHash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( poll ), digestType );
+  poll.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( poll ), digestType );
 
   // Return the hash
-  return poll.pollHash;
+  return poll.hash;
 }
 
 // Export the library

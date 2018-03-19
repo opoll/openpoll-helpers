@@ -2,7 +2,7 @@
 // Imports
 var fs = require('fs');
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../index')
 var tLib = helpers.poll_response;
 const privateKeyPem = fs.readFileSync("./private.key");
 const publicKeyPem = fs.readFileSync("./public.key");
@@ -36,9 +36,9 @@ describe( 'poll response helper', function() {
 
   it( 'properly computes the hash of a poll response', function( done ) {
     var pollResp = Object.assign( {}, validPollResponse );
-    pollResp.responseHash = undefined;
+    pollResp.hash = undefined;
     tLib.hash( pollResp );
-    expect( pollResp.responseHash ).to.equal( validPollResponse.responseHash );
+    expect( pollResp.hash ).to.equal( validPollResponse.hash );
     done();
   } );
 

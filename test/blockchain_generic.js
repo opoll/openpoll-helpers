@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../index')
 var tLib = helpers.generic;
 
 describe( 'blockchain generic helper', function() {
