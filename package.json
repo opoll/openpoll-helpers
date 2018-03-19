@@ -10,7 +10,7 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE.TXT",
   "dependencies": {
-    "@openpoll/schemas": "^1.0.9"
+    "@openpoll/schemas": "^1.10.0"
   },
   "devDependencies": {
     "chai": "^4.1.2",
