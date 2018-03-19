@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../index')
 var factory = require('../helpers/factory');
 
 describe( 'object factory', function() {

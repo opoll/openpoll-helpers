@@ -1,23 +1,21 @@
 
 // Imports
 var crypto = require('crypto');
-var NodeRSA = require('node-rsa');
-var schemaValidator = require('jsonschema').validate;
 var helper_generic = require('./blockchain_generic');
+const { schemas, validator } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
 
 // Path to a block schema
-lib.BLOCK_SCHEMA_PATH = "/poll/response";
-lib.BLOCK_SCHEMA = require( "../schemas/" + helper_generic.SCHEMA_VERSION + lib.BLOCK_SCHEMA_PATH + ".json" );
+lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].poll.response;
 
 /*
   Given a main chain block, this function will return true if the input
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return schemaValidator( obj, lib.BLOCK_SCHEMA );
+  return validator.validate(obj, lib.BLOCK_SCHEMA);
 }
 
 /*
@@ -25,7 +23,7 @@ lib.validateSchema = function( obj ) {
 */
 lib.bakedFields = function( pollResponseObj ) {
   return {
-    hash: pollResponseObj.responseHash,
+    hash: pollResponseObj.hash,
     fields: {
       pollHash: pollResponseObj.pollHash,
       timestamp: pollResponseObj.timestamp,
@@ -40,7 +38,7 @@ lib.bakedFields = function( pollResponseObj ) {
 /*
   This function produces a hash representing this poll response
   A poll response includes the following fields:
-    * pollHash
+    * hash
     * timestamp
     * respondentAddr
     * rewardAddr
@@ -71,10 +69,10 @@ lib.orderedHashFields = function( o ) {
 */
 lib.hash = function( o, digestType = "hex" ) {
   // Update the hash on the poll object
-  o.responseHash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
+  o.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
 
   // Return the hash
-  return o.responseHash;
+  return o.hash;
 }
 
 /*
@@ -115,11 +113,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
     Because the signature verification is intrinsically related to the
     response hash, we will force recompute a response hash to ensure integrity
   */
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
-
-  // Create an RSA Public Key Object
-  var respondentPubKey = (new NodeRSA());
-  respondentPubKey.importKey(respondentPubKeyData || pollResponseObj.respondentPublicKey, 'pkcs8-public-pem');
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   /*
     To prevent a valid respondent from spoofing a response from another user,
@@ -137,7 +131,11 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
     To verify the signature itself we ensure the respondent public key authored the signature
     specified in the response object, and the signature was derived from the response hash.
   */
-  if( !respondentPubKey.verify( pollResponseObj.responseHash, pollResponseObj.signature, null, 'hex' ) ) {
+
+  const verify = crypto.createVerify("sha256");
+  verify.update(pollResponseObj.hash);
+
+  if (!verify.verify(respondentPubKeyData || pollResponseObj.respondentPublicKey, pollResponseObj.signature, "hex")) {
     throw {
       name: "InvalidSignature",
       message: "the signature provided does not match this response or was not authored by the respondent"
@@ -151,27 +149,22 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
 /*
   Create a signature for a given poll with the provided private key
 */
-lib.sign = function( pollResponseObj, privateKeyData, rewardAddr = undefined ) {
-  // Import the private key
-  var respondentPrivKey = new NodeRSA();
-  respondentPrivKey.importKey( privateKeyData, "pkcs8-private-pem" );
-
-  // Derive the public key
-  var publicPlaintext = respondentPrivKey.exportKey( 'pkcs8-public-pem' );
-
+lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddr = undefined ) {
   // Calculate the address
-  var respondentAddr = helper_generic.publicKeyToAddress( publicPlaintext );
+  var respondentAddr = helper_generic.publicKeyToAddress( publicKeyData );
 
   // Update the poll response object..
-  pollResponseObj.respondentPublicKey = publicPlaintext;
+  pollResponseObj.respondentPublicKey = publicKeyData;
   pollResponseObj.respondentAddr = respondentAddr;
   pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
 
   // Recompute the response hash
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   // Compute a signature
-  pollResponseObj.signature = respondentPrivKey.sign( pollResponseObj.responseHash, 'hex' );
+  const sign = crypto.createSign("RSA-SHA256");
+  sign.update(pollResponseObj.hash);
+  pollResponseObj.signature = sign.sign(privateKeyData, "hex");
 }
 
 // Export the library

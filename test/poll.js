@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../index')
 var tLib = helpers.poll;
 
 // Factories
@@ -11,7 +11,7 @@ var validPollSimple = require('./schemas/0.1/validPollSimple.json' );
 describe( 'poll helper', function() {
 
   it( 'should contain a reference to the /poll/poll schema', function( done ) {
-    expect( tLib.POLL_SCHEMA_PATH ).to.equal( "/poll/poll" );
+    expect( tLib.POLL_SCHEMA.id ).to.equal( "https://schemas.openpoll.io/0.1/poll/poll.json" );
     done();
   } );
 
