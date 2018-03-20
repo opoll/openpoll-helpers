@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@openpoll/schemas@^1.0.9":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@openpoll/schemas/-/schemas-1.0.9.tgz#658e389d2242ac8a4ad4bb2f6c40a0a547104ee9"
+"@openpoll/schemas@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@openpoll/schemas/-/schemas-1.0.10.tgz#2c20d3199579aea73b1e291f10cede43c1e415b5"
   dependencies:
     jsonschema "^1.2.2"
 

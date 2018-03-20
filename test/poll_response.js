@@ -38,6 +38,7 @@ describe( 'poll response helper', function() {
     var pollResp = Object.assign( {}, validPollResponse );
     pollResp.hash = undefined;
     tLib.hash( pollResp );
+
     expect( pollResp.hash ).to.equal( validPollResponse.hash );
     done();
   } );
@@ -87,6 +88,7 @@ describe( 'poll response helper', function() {
       var pollResp = Object.assign( {}, validPollResponse );
       pollResp.signature = undefined;
       tLib.sign( pollResp, privateKeyPem, publicKeyPem );
+
       expect( pollResp.signature ).to.exist
     } );
 
