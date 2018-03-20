@@ -131,7 +131,6 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
     To verify the signature itself we ensure the respondent public key authored the signature
     specified in the response object, and the signature was derived from the response hash.
   */
-
   const verify = crypto.createVerify("sha256");
   verify.update(pollResponseObj.hash);
 
