@@ -24,7 +24,7 @@ lib.validateSchema = function( obj ) {
   hash for this specific shard block object. Set ignoreNonce to true if
   you do not want the nonce included in the set.
     * blockId
-    * pollHash
+    * hash
     * timestamp
     * prevHash
     * responses

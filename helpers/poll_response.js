@@ -38,7 +38,7 @@ lib.bakedFields = function( pollResponseObj ) {
 /*
   This function produces a hash representing this poll response
   A poll response includes the following fields:
-    * pollHash
+    * hash
     * timestamp
     * respondentAddr
     * rewardAddr

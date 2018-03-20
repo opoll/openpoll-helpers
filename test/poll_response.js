@@ -38,9 +38,9 @@ describe( 'poll response helper', function() {
 
   it( 'properly computes the hash of a poll response', function( done ) {
     var pollResp = Object.assign( {}, validPollResponse );
-    pollResp.responseHash = undefined;
+    pollResp.hash = undefined;
     tLib.hash( pollResp );
-    expect( pollResp.responseHash ).to.equal( validPollResponse.responseHash );
+    expect( pollResp.hash ).to.equal( validPollResponse.hash );
     done();
   } );
 
