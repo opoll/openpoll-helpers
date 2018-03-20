@@ -2,7 +2,7 @@
 // Imports
 var crypto = require('crypto');
 var helper_generic = require('./blockchain_generic');
-const { schemas, validator } = require("@openpoll/schemas");
+const { schemas, validate } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
@@ -15,7 +15,7 @@ lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].poll.response;
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return validator.validate(obj, lib.BLOCK_SCHEMA);
+  return validate(lib.BLOCK_SCHEMA, obj);
 }
 
 /*
@@ -23,12 +23,12 @@ lib.validateSchema = function( obj ) {
 */
 lib.bakedFields = function( pollResponseObj ) {
   return {
-    hash: pollResponseObj.responseHash,
+    hash: pollResponseObj.hash,
     fields: {
       pollHash: pollResponseObj.pollHash,
       timestamp: pollResponseObj.timestamp,
-      respondentAddr: pollResponseObj.respondentAddr,
-      rewardAddr: pollResponseObj.rewardAddr,
+      respondentAddress: pollResponseObj.respondentAddress,
+      rewardAddress: pollResponseObj.rewardAddress,
       responses: pollResponseObj.responseData,
       respondentDemographics: pollResponseObj.respondentDemographics
     }
@@ -49,8 +49,8 @@ lib.orderedHashFields = function( o ) {
   var arr = [
     o.pollHash,
     o.timestamp.toString(),
-    o.respondentAddr,
-    o.rewardAddr || ""
+    o.respondentAddress,
+    o.rewardAddress || ""
   ];
 
   // Include response data
@@ -69,10 +69,10 @@ lib.orderedHashFields = function( o ) {
 */
 lib.hash = function( o, digestType = "hex" ) {
   // Update the hash on the poll object
-  o.responseHash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
+  o.hash = helper_generic.hashFromOrderedFields( lib.orderedHashFields( o ), digestType );
 
   // Return the hash
-  return o.responseHash;
+  return o.hash;
 }
 
 /*
@@ -97,7 +97,7 @@ lib.hashResponses = function( pollResponseArr, digestType = "hex" ) {
   response corresponds to the public address. This function requires the
   public key of the respondent.
 */
-lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null ) {
+lib.validateSignature = function( pollResponseObj, respondentPubKeyData ) {
   // If no public key could be found..
   if( (respondentPubKeyData == undefined) && (pollResponseObj.respondentPublicKey == undefined) ) {
     throw {
@@ -107,20 +107,20 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
   }
 
   // Convert the public key to an address
-  var respondentAddr = helper_generic.publicKeyToAddress( respondentPubKeyData || pollResponseObj.respondentPublicKey );
+  var respondentAddress = helper_generic.publicKeyToAddress( respondentPubKeyData || pollResponseObj.respondentPublicKey );
 
   /*
     Because the signature verification is intrinsically related to the
     response hash, we will force recompute a response hash to ensure integrity
   */
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   /*
     To prevent a valid respondent from spoofing a response from another user,
     we ensure the respondentAddr listed in the response object aligns with the
     protected public key.
   */
-  if( pollResponseObj.respondentAddr !== respondentAddr ) {
+  if( pollResponseObj.respondentAddress !== respondentAddress ) {
     throw {
       name: "InvalidRespondentAddress",
       message: "the address specified in the response does not correspond to the provided public key"
@@ -133,7 +133,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
   */
 
   const verify = crypto.createVerify("sha256");
-  verify.update(pollResponseObj.responseHash);
+  verify.update(pollResponseObj.hash);
 
   if (!verify.verify(respondentPubKeyData || pollResponseObj.respondentPublicKey, pollResponseObj.signature, "hex")) {
     throw {
@@ -149,21 +149,21 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData = null )
 /*
   Create a signature for a given poll with the provided private key
 */
-lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddr = undefined ) {
+lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddress = undefined ) {
   // Calculate the address
-  var respondentAddr = helper_generic.publicKeyToAddress( publicKeyData );
+  var respondentAddress = helper_generic.publicKeyToAddress( publicKeyData );
 
   // Update the poll response object..
   pollResponseObj.respondentPublicKey = publicKeyData;
-  pollResponseObj.respondentAddr = respondentAddr;
-  pollResponseObj.rewardAddr = rewardAddr || pollResponseObj.rewardAddr;
+  pollResponseObj.respondentAddress = respondentAddress;
+  pollResponseObj.rewardAddress = rewardAddress || pollResponseObj.rewardAddress;
 
   // Recompute the response hash
-  pollResponseObj.responseHash = lib.hash( pollResponseObj );
+  pollResponseObj.hash = lib.hash( pollResponseObj );
 
   // Compute a signature
   const sign = crypto.createSign("RSA-SHA256");
-  sign.update(pollResponseObj.responseHash);
+  sign.update(pollResponseObj.hash);
   pollResponseObj.signature = sign.sign(privateKeyData, "hex");
 }
 

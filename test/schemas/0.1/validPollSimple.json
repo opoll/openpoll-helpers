@@ -1,9 +1,9 @@
 {
-  "pollHash": "f7cfde12f7b3e1bc7887fbbff0b995ecdeca854486d6881391a93cc51d09354d",
+  "hash": "f7cfde12f7b3e1bc7887fbbff0b995ecdeca854486d6881391a93cc51d09354d",
   "timestamp": 1520015220,
   "expiry": 1527811200,
   "totalFunding": 100,
-  "maxRespondents": 1000,
+  "maxResponses": 1000,
   "questions": [
     "Do you support Donald Trump?"
   ],

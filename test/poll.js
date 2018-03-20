@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
+var helpers = require('../')
 var tLib = helpers.poll;
 
 // Factories
@@ -11,12 +11,12 @@ var validPollSimple = require('./schemas/0.1/validPollSimple.json' );
 describe( 'poll helper', function() {
 
   it( 'should contain a reference to the /poll/poll schema', function( done ) {
-    expect( tLib.POLL_SCHEMA.id ).to.equal( "https://schemas.openpoll.io/0.1/poll/poll.json" );
+    expect( tLib.POLL_SCHEMA["$id"] ).to.equal( "https://schemas.openpoll.io/0.1/poll/poll.json" );
     done();
   } );
 
   it( 'should validate a valid schema', function( done ) {
-    expect( tLib.validateSchema( validPollSimple ).errors.length ).to.equal(0);
+    expect( tLib.validateSchema( validPollSimple ) ).to.equal(true);
     done();
   } );
 
@@ -25,9 +25,9 @@ describe( 'poll helper', function() {
     poll.timestamp = "123123123";
     poll.imageId = "5";
     poll.questions = undefined;
-    poll.maxRespondents = -6;
+    poll.maxResponses = -6;
     poll.totalFunding = -1000;
-    expect( tLib.validateSchema( poll ).errors.length ).to.equal(5);
+    expect(tLib.validateSchema(poll)).to.equal(false);
     done();
   } );
 
@@ -35,7 +35,7 @@ describe( 'poll helper', function() {
 
     it( 'should contain the same poll id', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      expect( genesisBlock.hash ).to.equal( validPollSimple.pollHash );
+      expect( genesisBlock.pollHash ).to.equal( validPollSimple.hash );
       done();
     } );
 
@@ -53,14 +53,14 @@ describe( 'poll helper', function() {
 
     it( 'should return the correct hash', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      var _hash = genesisBlock.pollHash;
-      expect( helpers.shard_block.hash( genesisBlock) ).to.equal( _hash );
+      var _hash = genesisBlock.hash;
+      expect( helpers.shardBlock.hash( genesisBlock) ).to.equal( _hash );
       done();
     } );
 
     it( 'should be considered the genesis block', function( done ) {
       var genesisBlock = tLib.generateGenesisBlock( validPollSimple );
-      expect( helpers.shard_block.isGenesis( genesisBlock ) ).to.be.true;
+      expect( helpers.shardBlock.isGenesis( genesisBlock ) ).to.be.true;
       done();
     } );
 
@@ -94,18 +94,18 @@ describe( 'poll helper', function() {
 
     it( 'should produce a correct poll hash', function( done ) {
       var poll = Object.assign( {}, validPollSimple );
-      var _hash = poll.pollHash;
+      var _hash = poll.hash;
       expect( tLib.hash( poll ) ).to.equal( _hash );
-      expect( poll.pollHash ).to.equal( _hash );
+      expect( poll.hash ).to.equal( _hash );
       done();
     } );
 
     it( 'should change when the content changes', function( done ) {
       var poll = Object.assign( {}, validPollSimple );
-      var _hash = poll.pollHash;
+      var _hash = poll.hash;
       poll.timestamp++;
       tLib.hash( poll );
-      expect( poll.pollHash ).to.not.equal( _hash );
+      expect( poll.hash ).to.not.equal( _hash );
       done();
     } );
 
@@ -129,7 +129,7 @@ describe( 'poll helper', function() {
       var pollFundDistr = tLib.getFundingDistribution( poll );
       var sum = 0;
       sum += pollFundDistr.network.shard + pollFundDistr.network.mcif;
-      sum += pollFundDistr.respondent.individual * poll.maxRespondents;
+      sum += pollFundDistr.respondent.individual * poll.maxResponses;
       expect( sum ).to.equal( poll.totalFunding );
     } );
 

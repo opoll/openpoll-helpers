@@ -3,7 +3,7 @@
 var crypto = require('crypto');
 var helper_generic = require('./blockchain_generic');
 var helper_poll_response = require('./poll_response');
-const { schemas, validator } = require("@openpoll/schemas");
+const { schemas, validate } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
@@ -16,7 +16,7 @@ lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].shard.block;
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return validator.validate(obj, lib.BLOCK_SCHEMA);
+  return validate(lib.BLOCK_SCHEMA, obj);
 }
 
 /*

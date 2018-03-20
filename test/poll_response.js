@@ -2,10 +2,11 @@
 // Imports
 var fs = require('fs');
 var expect = require('chai').expect;
-var helpers = require('../openpoll_helpers')
-var tLib = helpers.poll_response;
+var helpers = require('../')
+var tLib = helpers.pollResponse;
 const privateKeyPem = fs.readFileSync("./private.key");
 const publicKeyPem = fs.readFileSync("./public.key");
+const validator = require("@openpoll/schemas").validator;
 
 // Some of our factories
 var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
@@ -13,12 +14,13 @@ var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
 describe( 'poll response helper', function() {
 
   it( 'should reference the /poll/response schema', function( done ) {
-    expect( tLib.BLOCK_SCHEMA.id ).to.equal( "https://schemas.openpoll.io/0.1/poll/response.json" );
+    expect( tLib.BLOCK_SCHEMA["$id"] ).to.equal( "https://schemas.openpoll.io/0.1/poll/response.json" );
     done();
   } );
 
   it( 'should validate a valid schema', function( done ) {
-    expect( tLib.validateSchema( validPollResponse ).errors.length ).to.equal(0);
+    var valid = tLib.validateSchema(validPollResponse);
+    expect( valid ).to.equal(true);
     done();
   } );
 
@@ -26,11 +28,11 @@ describe( 'poll response helper', function() {
       var invalidPollResponse = Object.assign( {}, validPollResponse );
       invalidPollResponse.pollHash = undefined;
       invalidPollResponse.timestamp = undefined;
-      invalidPollResponse.respondentAddr = undefined;
+      invalidPollResponse.respondentAddress = undefined;
       invalidPollResponse.responseData = undefined;
       invalidPollResponse.respondentDemographics = undefined;
       invalidPollResponse.signature = undefined;
-      expect( tLib.validateSchema( invalidPollResponse ).errors.length >= 6 ).to.be.true;
+      expect( tLib.validateSchema( invalidPollResponse ) ).to.equal(false);
       done();
   } );
 
@@ -67,7 +69,7 @@ describe( 'poll response helper', function() {
 
     it( 'does not validate signatures where the respondent address is incorrect', function( done ) {
       var pollResp = Object.assign( {}, validPollResponse );
-      pollResp.respondentAddr = "1BfaV1JY7J5kEtJVZrUoCHojkUVK2+YpeBJ/SDsu+fs=";
+      pollResp.respondentAddress = "1BfaV1JY7J5kEtJVZrUoCHojkUVK2+YpeBJ/SDsu+fs=";
       expect( function () { tLib.validateSignature( pollResp ); } ).to.throw('the address specified in the response does not correspond to the provided public key');
       done();
     } );

@@ -2,7 +2,7 @@
 // Imports
 var crypto = require('crypto');
 var helper_generic = require('./blockchain_generic');
-const { schemas, validator } = require("@openpoll/schemas");
+const { schemas, validate } = require("@openpoll/schemas");
 
 // Create the library
 var mainchainHelpers = {};
@@ -15,7 +15,7 @@ mainchainHelpers.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].mainchain
   conforms to schema and false if the schema is invalid
 */
 mainchainHelpers.validateBlockSchema = function( mainChainBlock ) {
-  return validator.validate(mainChainBlock, mainchainHelpers.BLOCK_SCHEMA);
+  return validate(mainchainHelpers.BLOCK_SCHEMA, mainChainBlock);
 }
 
 /*
