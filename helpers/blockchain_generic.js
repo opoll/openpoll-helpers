@@ -72,7 +72,10 @@ lib.publicKeyToAddress = function(publicKey, versionByte = '00') {
   const binaryAddress = versionedPubKeyHash2 + checksum;
 
   // 7.) Convert the result from a byte string into a base58 string
-  const address = bs58check.encode(Buffer.from(binaryAddress, 'hex'));
+  const preAddress = bs58check.encode(Buffer.from(binaryAddress, 'hex'));
+
+  // 8.) Prepend OPEN and append POLL
+  const address = "OPEN" + preAddress + "POLL";
 
   return address;
 }
