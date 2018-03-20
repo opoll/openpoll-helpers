@@ -53,9 +53,6 @@ lib.generateGenesisBlock = function( pollObj ) {
   // Hash the genesis block
   ShardBlockHelper.hash( POLL_GENESIS_BLOCK );
 
-  console.log( "we are hashing the genesis block!" );
-  console.log( POLL_GENESIS_BLOCK );
-
   // Return the genesis block
   return POLL_GENESIS_BLOCK;
 }
