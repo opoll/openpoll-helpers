@@ -68,7 +68,7 @@ describe( 'poll response helper', function() {
 
     it( 'does not validate signatures where the respondent address is incorrect', function( done ) {
       var pollResp = Object.assign( {}, validPollResponse );
-      pollResp.respondentAddr = "1BfaV1JY7J5kEtJVZrUoCHojkUVK2+YpeBJ/SDsu+fs=";
+      pollResp.respondentAddr = "OPEN1mMTEJpEryi2gBms18kz1renrEfJEMrmWFdTXNkWRONG";
       expect( function () { tLib.validateSignature( pollResp ); } ).to.throw('the address specified in the response does not correspond to the provided public key');
       done();
     } );
@@ -88,7 +88,6 @@ describe( 'poll response helper', function() {
       var pollResp = Object.assign( {}, validPollResponse );
       pollResp.signature = undefined;
       tLib.sign( pollResp, privateKeyPem, publicKeyPem );
-
       expect( pollResp.signature ).to.exist
     } );
 
