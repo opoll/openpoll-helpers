@@ -20,7 +20,6 @@ describe( 'poll response helper', function() {
 
   it( 'should validate a valid schema', function( done ) {
     var valid = tLib.validateSchema(validPollResponse);
-    console.log(require("@openpoll/schemas").validator.errors);
     expect( valid ).to.equal(true);
     done();
   } );
