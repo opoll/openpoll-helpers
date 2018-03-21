@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../index')
+var helpers = require('../')
 var factory = require('../helpers/factory');
 
 describe( 'object factory', function() {
@@ -15,8 +15,8 @@ describe( 'object factory', function() {
 
     it( 'should generate a valid poll', function( done ) {
       var generatedPoll = factory.generateTestPoll();
-      var validation = helpers.poll.validateSchema( generatedPoll );
-      expect( validation.errors.length ).to.equal( 0 );
+      var valid = helpers.poll.validateSchema( generatedPoll );
+      expect( valid ).to.equal( true );
       done();
     } );
 

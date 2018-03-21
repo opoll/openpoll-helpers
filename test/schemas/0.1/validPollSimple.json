@@ -3,7 +3,7 @@
   "timestamp": 1520015220,
   "expiry": 1527811200,
   "totalFunding": 100,
-  "maxRespondents": 1000,
+  "maxResponses": 1000,
   "questions": [
     "Do you support Donald Trump?"
   ],

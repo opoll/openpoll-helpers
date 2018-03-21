@@ -13,7 +13,7 @@ factory.generateTestPoll = function(
   timestamp = Math.floor(new Date() / 1000),
   expiry = Math.floor(new Date() / 1000) + 1440 * 60 * 5,
   totalFunding = 100,
-  maxRespondents = 50,
+  maxResponses = 50,
   questions = ["Do you support the President?"],
   imageId = 1
 ) {
@@ -21,7 +21,7 @@ factory.generateTestPoll = function(
     "timestamp": timestamp,
     "expiry": expiry,
     "totalFunding": totalFunding,
-    "maxRespondents": maxRespondents,
+    "maxResponses": maxResponses,
     "questions": questions,
     "imageId": imageId
   };
