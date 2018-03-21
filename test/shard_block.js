@@ -1,8 +1,8 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../index')
-var tLib = helpers.shard_block;
+var helpers = require('../')
+var tLib = helpers.shardBlock;
 
 // Factories
 var factory = require('../helpers/factory');

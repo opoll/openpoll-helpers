@@ -2,7 +2,7 @@
 // Imports
 var crypto = require('crypto');
 var helper_generic = require('./blockchain_generic');
-const { schemas, validator } = require("@openpoll/schemas");
+const { schemas, validate } = require("@openpoll/schemas");
 
 // Helper Imports
 var ShardBlockHelper = require( './shard_block' );
@@ -21,7 +21,7 @@ lib.NETWORK_FUND_PERCENT = 0.15;
   conforms to schema and false if the schema is invalid
 */
 lib.validateSchema = function( obj ) {
-  return validator.validate(obj, lib.POLL_SCHEMA);
+  return validate(lib.POLL_SCHEMA, obj);
 }
 
 // Returns if a poll is expired
@@ -76,12 +76,12 @@ lib.getFundingDistribution = function( poll ) {
   return {
     "respondent": {
       "_total": respondentPartition,
-      "individual": (respondentPartition / poll.maxRespondents)
+      "individual": (respondentPartition / poll.maxResponses)
     },
     "network": {
       "_total": networkPartition,
       "shard": networkPartition * 0.75,
-      "shard_resp": (networkPartition * 0.75) / poll.maxRespondents,
+      "shard_resp": (networkPartition * 0.75) / poll.maxResponses,
       "mcif": networkPartition * 0.25
     }
   };
@@ -93,7 +93,7 @@ lib.getFundingDistribution = function( poll ) {
     1) timestamp
     2) expiry
     3) totalFunding
-    4) maxRespondents
+    4) maxResponses
     5) imageId
     6) questions
 */
@@ -102,7 +102,7 @@ lib.orderedHashFields = function( poll ) {
     poll.timestamp.toString(),
     poll.expiry.toString(),
     poll.totalFunding.toString(),
-    poll.maxRespondents.toString(),
+    poll.maxResponses.toString(),
     poll.imageId.toString()
   ];
 

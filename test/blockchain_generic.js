@@ -1,7 +1,7 @@
 
 // Imports
 var expect = require('chai').expect;
-var helpers = require('../index')
+var helpers = require('../');
 var tLib = helpers.generic;
 
 describe( 'blockchain generic helper', function() {
