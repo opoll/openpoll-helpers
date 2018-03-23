@@ -1,11 +1,9 @@
-import jsonschema = require("jsonschema");
-
 interface NestedSchemas {
 	[key: string]: NestedSchemas;
 }
 
 interface PollResponseHelpers {
-	validateSchema: (data: any) => jsonschema.ValidatorResult;
+	validateSchema: (data: any) => boolean;
 	validateSignature: (data: any, publicKey?: string) => boolean;
 }
 
