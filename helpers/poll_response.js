@@ -2,7 +2,7 @@
 // Imports
 var crypto = require('crypto');
 var helper_generic = require('./blockchain_generic');
-const { schemas, validate } = require("@openpoll/schemas");
+const { schemas, validate, validator } = require("@openpoll/schemas");
 
 // Create the library
 var lib = {};
@@ -16,6 +16,78 @@ lib.BLOCK_SCHEMA = schemas[helper_generic.SCHEMA_VERSION].poll.response;
 */
 lib.validateSchema = function( obj ) {
   return validate(lib.BLOCK_SCHEMA, obj);
+}
+
+/*
+  Validate the response based on the poll it is supposedly responding to
+*/
+lib.validateAnswers = function (poll, response) {
+  if (!validate(schemas[helper_generic.SCHEMA_VERSION].poll.poll, poll)) {
+    // Invalid poll format
+    return false;
+  }
+
+  if (!lib.validateSchema(response)) {
+    // Invalid response format
+    return false;
+  }
+
+  // Check if the amount of responses equal the amount of questions
+  if (poll.questions.length !== response.answers.length) {
+    return false;
+  }
+
+  // Validate response against poll
+  for (let i = 0; i < poll.questions.length; i++) {
+    let question = poll.questions[i];
+
+    // Check if the answers for each question match the question's possible answers
+    switch (question.questionType) {
+      case "boolean":
+        if (typeof response.answers[i] !== "boolean") {
+          return false;
+        }
+      break;
+      case "selectOne":
+        if (typeof response.answers[i] !== "string") {
+          return false;
+        }
+
+        if (question.options.find((option) => {
+          return option.key === response.answers[i];
+        }) === undefined) {
+          // Given answer not in the possible answers list
+          return false;
+        }
+      break;
+      case "selectAny":
+      case "selectMax":
+        if (!Array.isArray(response.answers[i])) {
+          return false;
+        }
+
+        for (let j = 0; j < response.answers[i].length; j++) {
+          if (typeof response.answers[i][j] !== "string") {
+            return false;
+          }
+
+          if (question.options.find((option) => {
+            return option.key === response.answers[i][j];
+          }) === undefined) {
+            // Given answer not in the possible answers list
+            return false;
+          }
+        }
+      break;
+    }
+
+    if (question.questionType === "selectMax" && response.answers[i].length > question.maxSelected) {
+      // User selected more responses than allowed
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /*
