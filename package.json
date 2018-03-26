@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "mocha",
     "cover": "istanbul cover _mocha"
@@ -10,7 +11,7 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE.TXT",
   "dependencies": {
-    "@openpoll/schemas": "^1.0.12",
+    "@openpoll/schemas": "1.0.13",
     "bcryptjs": "^2.4.3",
     "bs58check": "^2.1.1",
     "elliptic": "^6.4.0",

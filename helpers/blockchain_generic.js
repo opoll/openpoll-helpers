@@ -58,6 +58,8 @@ lib.publicKeyToAddress = function(publicKey, versionByte = '00') {
     publicKey = publicKey.toString('utf8');
   }
 
+  publicKey = publicKey.replace(/\r\n/g, "\n");
+
   // 1.) Perform SHA-256 hashing on the public key
   const pubKeyHash1 = lib.hash(publicKey, 'sha256');
 
