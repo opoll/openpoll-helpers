@@ -53,9 +53,6 @@ lib.generateGenesisBlock = function( pollObj ) {
   // Hash the genesis block
   ShardBlockHelper.hash( POLL_GENESIS_BLOCK );
 
-  console.log( "we are hashing the genesis block!" );
-  console.log( POLL_GENESIS_BLOCK );
-
   // Return the genesis block
   return POLL_GENESIS_BLOCK;
 }
@@ -100,6 +97,7 @@ lib.getFundingDistribution = function( poll ) {
 lib.orderedHashFields = function( poll ) {
   var arr = [
     poll.timestamp.toString(),
+    poll.title,
     poll.expiry.toString(),
     poll.totalFunding.toString(),
     poll.maxResponses.toString(),
@@ -107,9 +105,21 @@ lib.orderedHashFields = function( poll ) {
   ];
 
   // Loop through all questions in the poll and include them
-  poll.questions.forEach( function( questionText ) {
-    arr.push( questionText );
-  } );
+  poll.questions.forEach((question) => {
+    arr.push(question.questionType);
+    arr.push(question.label);
+
+    if (question.options) {
+      question.options.forEach((option) => {
+        arr.push(option.key);
+        arr.push(option.value);
+      });
+    }
+
+    if (question.maxSelected) {
+      arr.push(question.maxSelected.toString());
+    }
+  });
 
   return arr;
 }

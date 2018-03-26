@@ -4,11 +4,12 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var helpers = require('../')
 var tLib = helpers.pollResponse;
-const privateKeyPem = fs.readFileSync("./private.key");
-const publicKeyPem = fs.readFileSync("./public.key");
+const privateKeyPem = fs.readFileSync("./private.key", { encoding: "utf8" });
+const publicKeyPem = fs.readFileSync("./public.key", { encoding: "utf8" });
 const validator = require("@openpoll/schemas").validator;
 
 // Some of our factories
+var validPoll = require("./schemas/0.1/validPollSimple.json");
 var validPollResponse = require('./schemas/0.1/validPollResponseSimple.json');
 
 describe( 'poll response helper', function() {
@@ -23,6 +24,11 @@ describe( 'poll response helper', function() {
     expect( valid ).to.equal(true);
     done();
   } );
+
+  it("should validate answers against the poll questions", function () {
+    var valid = tLib.validateAnswers(validPoll, validPollResponse);
+    expect(valid).to.equal(true);
+  });
 
   it( 'does not validate a schema without a poll hash', function( done ) {
       var invalidPollResponse = Object.assign( {}, validPollResponse );
@@ -40,6 +46,7 @@ describe( 'poll response helper', function() {
     var pollResp = Object.assign( {}, validPollResponse );
     pollResp.hash = undefined;
     tLib.hash( pollResp );
+
     expect( pollResp.hash ).to.equal( validPollResponse.hash );
     done();
   } );
@@ -69,7 +76,7 @@ describe( 'poll response helper', function() {
 
     it( 'does not validate signatures where the respondent address is incorrect', function( done ) {
       var pollResp = Object.assign( {}, validPollResponse );
-      pollResp.respondentAddress = "1BfaV1JY7J5kEtJVZrUoCHojkUVK2+YpeBJ/SDsu+fs=";
+      pollResp.respondentAddress = "OPEN1mMTEJpEryi2gBms18kz1renrEfJEMrmWFdTXNkWRONG";
       expect( function () { tLib.validateSignature( pollResp ); } ).to.throw('the address specified in the response does not correspond to the provided public key');
       done();
     } );
