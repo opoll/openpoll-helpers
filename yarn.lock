@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@openpoll/schemas@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@openpoll/schemas/-/schemas-1.0.12.tgz#b9212ba03980ff8fe6f2199517c2b3c4be201f59"
+"@openpoll/schemas@1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@openpoll/schemas/-/schemas-1.0.13.tgz#188a2bf46f40286a8acc7e25829d6c1502850915"
   dependencies:
     ajv "^6.3.0"
 
