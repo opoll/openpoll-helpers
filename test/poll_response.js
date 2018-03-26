@@ -4,8 +4,8 @@ var fs = require('fs');
 var expect = require('chai').expect;
 var helpers = require('../')
 var tLib = helpers.pollResponse;
-const privateKeyPem = fs.readFileSync("./private.key");
-const publicKeyPem = fs.readFileSync("./public.key");
+const privateKeyPem = fs.readFileSync("./private.key", { encoding: "utf8" });
+const publicKeyPem = fs.readFileSync("./public.key", { encoding: "utf8" });
 const validator = require("@openpoll/schemas").validator;
 
 // Some of our factories

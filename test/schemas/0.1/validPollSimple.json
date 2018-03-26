@@ -4,8 +4,58 @@
   "expiry": 1527811200,
   "totalFunding": 100,
   "maxResponses": 1000,
-  "questions": [
-    "Do you support Donald Trump?"
-  ],
+  "questions": [{
+    "questionType": "selectOne",
+    "label": "Pick your favorite recent President",
+    "options": [{
+      "key": "trump",
+      "value": "Donald Trump"
+    }, {
+      "key": "obama",
+      "value": "Barack Obama"
+    }, {
+      "key": "bush",
+      "value": "George W. Bush"
+    }, {
+      "key": "clinton",
+      "value": "Bill Clinton"
+    }]
+  }, {
+    "questionType": "boolean",
+    "label": "Do you consider yourself politically involved?"
+  }, {
+    "questionType": "selectAny",
+    "label": "What universities have you heard of?",
+    "options": [{
+      "key": "harvard",
+      "value": "Harvard University"
+    }, {
+      "key": "gulliford",
+      "value": "Gulliford College"
+    }, {
+      "key": "carolinaState",
+      "value": "North Carolina State"
+    }, {
+      "key": "elon",
+      "value": "Elon University"
+    }]
+  }, {
+    "questionType": "selectMax",
+    "label": "Select your top 2 favorite brands, if any",
+    "options": [{
+      "key": "apple",
+      "value": "Apple"
+    }, {
+      "key": "cocaCola",
+      "value": "Coca Cola"
+    }, {
+      "key": "pepsi",
+      "value": "Pepsi"
+    }, {
+      "key": "google",
+      "value": "Google"
+    }],
+    "maxSelected": 2
+  }],
   "imageId": 1
 }

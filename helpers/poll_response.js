@@ -29,7 +29,7 @@ lib.bakedFields = function( pollResponseObj ) {
       timestamp: pollResponseObj.timestamp,
       respondentAddress: pollResponseObj.respondentAddress,
       rewardAddress: pollResponseObj.rewardAddress,
-      responses: pollResponseObj.responseData,
+      answers: pollResponseObj.answers,
       respondentDemographics: pollResponseObj.respondentDemographics
     }
   }
@@ -40,9 +40,9 @@ lib.bakedFields = function( pollResponseObj ) {
   A poll response includes the following fields:
     * hash
     * timestamp
-    * respondentAddr
-    * rewardAddr
-    * respondeData
+    * respondentAddress
+    * rewardAddress
+    * answers
     * respondentDemographics
 */
 lib.orderedHashFields = function( o ) {
@@ -54,12 +54,21 @@ lib.orderedHashFields = function( o ) {
   ];
 
   // Include response data
-  o.responseData.forEach( function( responseStr ) {
-    arr.push( responseStr );
-  } );
+  o.answers.forEach(( answer ) => {
+    if (Array.isArray(answer)) {
+      answer.forEach((value) => {
+        arr.push(value);
+      });
+    } else {
+      arr.push(answer.toString());
+    }
+  });
 
-  // Include demographic information
-  // TODO
+  // Include demographic information (sort alphabetically by key)
+  Object.keys(o.respondentDemographics).sort().forEach((demographic) => {
+    arr.push(demographic);
+    arr.push(o.respondentDemographics[demographics]);
+  });
 
   return arr;
 }
@@ -146,7 +155,7 @@ lib.validateSignature = function( pollResponseObj, respondentPubKeyData ) {
 }
 
 /*
-  Create a signature for a given poll with the provided private key
+  Create a signature for a given response with the provided private key
 */
 lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddress = undefined ) {
   // Calculate the address
@@ -162,6 +171,7 @@ lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddre
 
   // Compute a signature
   const sign = crypto.createSign("RSA-SHA256");
+
   sign.update(pollResponseObj.hash);
   pollResponseObj.signature = sign.sign(privateKeyData, "hex");
 }

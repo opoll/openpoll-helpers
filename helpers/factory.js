@@ -14,7 +14,10 @@ factory.generateTestPoll = function(
   expiry = Math.floor(new Date() / 1000) + 1440 * 60 * 5,
   totalFunding = 100,
   maxResponses = 50,
-  questions = ["Do you support the President?"],
+  questions = [{
+    questionType: "boolean",
+    label: "Do you support the President?"
+  }],
   imageId = 1
 ) {
   var poll = {
