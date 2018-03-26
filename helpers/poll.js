@@ -97,6 +97,7 @@ lib.getFundingDistribution = function( poll ) {
 lib.orderedHashFields = function( poll ) {
   var arr = [
     poll.timestamp.toString(),
+    poll.title,
     poll.expiry.toString(),
     poll.totalFunding.toString(),
     poll.maxResponses.toString(),

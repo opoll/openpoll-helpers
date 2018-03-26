@@ -11,6 +11,7 @@ var ShardBlockHelpers = require( './shard_block' );
 */
 factory.generateTestPoll = function(
   timestamp = Math.floor(new Date() / 1000),
+  title = "A generated test poll",
   expiry = Math.floor(new Date() / 1000) + 1440 * 60 * 5,
   totalFunding = 100,
   maxResponses = 50,
@@ -22,6 +23,7 @@ factory.generateTestPoll = function(
 ) {
   var poll = {
     "timestamp": timestamp,
+    "title": title,
     "expiry": expiry,
     "totalFunding": totalFunding,
     "maxResponses": maxResponses,
