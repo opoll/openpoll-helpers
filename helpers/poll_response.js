@@ -234,7 +234,7 @@ lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddre
   var respondentAddress = helper_generic.publicKeyToAddress( publicKeyData );
 
   // Update the poll response object..
-  pollResponseObj.respondentPublicKey = publicKeyData;
+  pollResponseObj.respondentPublicKey = publicKeyData.toString();
   pollResponseObj.respondentAddress = respondentAddress;
   pollResponseObj.rewardAddress = rewardAddress || pollResponseObj.rewardAddress;
 
