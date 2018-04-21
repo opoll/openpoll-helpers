@@ -2,6 +2,10 @@ interface NestedSchemas {
 	[key: string]: NestedSchemas;
 }
 
+interface GenericHelpers {
+	publicKeyToAddress: (publicKey: string, versionByte: string = "00") => string;
+}
+
 interface PollHelpers {
 	validateSchema: (data: any) => boolean;
 	isExpired: (data: any) => boolean;
@@ -17,8 +21,8 @@ interface PollResponseHelpers {
 }
 
 interface OpenPollHelpers {
-	generic: any;
-	mainChain: any;
+	generic: GenericHelpers;
+	mainchain: any;
 	pollResponse: PollResponseHelpers;
 	poll: PollHelpers;
 	shardBlock: any;
