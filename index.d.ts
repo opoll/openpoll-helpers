@@ -3,7 +3,7 @@ interface NestedSchemas {
 }
 
 interface GenericHelpers {
-	publicKeyToAddress: (publicKey: string, versionByte: string = "00") => string;
+	publicKeyToAddress: (publicKey: string, versionByte?: string) => string;
 }
 
 interface PollHelpers {
