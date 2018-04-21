@@ -26,6 +26,7 @@ interface OpenPollHelpers {
 	pollResponse: PollResponseHelpers;
 	poll: PollHelpers;
 	shardBlock: any;
+	transaction: any;
 }
 
 declare var _: OpenPollHelpers;
