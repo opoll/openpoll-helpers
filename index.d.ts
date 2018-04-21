@@ -20,13 +20,20 @@ interface PollResponseHelpers {
 	sign: (data: any, privateKey: string | Buffer, publicKey: string | Buffer, rewardAddress?: string) => void;
 }
 
+interface TransactionHelpers {
+	validateSchema: (data: any) => boolean;
+	hash: (data: any, digestType?: string) => string;
+	validateSignature: (data: any, publicKey?: string) => boolean;
+	sign: (data: any, privateKey: string | Buffer, publicKey: string | buffer) => void;
+}
+
 interface OpenPollHelpers {
 	generic: GenericHelpers;
 	mainchain: any;
 	pollResponse: PollResponseHelpers;
 	poll: PollHelpers;
 	shardBlock: any;
-	transaction: any;
+	transaction: TransactionHelpers;
 }
 
 declare var _: OpenPollHelpers;
