@@ -9,6 +9,7 @@ helpers.pollResponse = require( './helpers/poll_response' );
 helpers.poll = require( './helpers/poll' );
 helpers.shardBlock = require( './helpers/shard_block' );
 helpers.transaction = require( './helpers/transactions' );
+helpers.utxo = require( './helpers/utxo' );
 
 // Export our helpers
 module.exports = helpers;
