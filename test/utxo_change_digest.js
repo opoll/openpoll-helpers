@@ -20,6 +20,21 @@ describe( 'UTXO Change Digest helper', function() {
     invalidUTXOChangeDigest.balances = undefined;
     expect( tLib.validateChangeDigest(invalidUTXOChangeDigest) ).to.equal(false);
     done();
-  })
+  });
+
+  it('properly updates a ledger', function(done) {
+    var L = {};
+
+    var setLedger = function(addr, bal) {
+      L[addr] = bal;
+    };
+
+    tLib.applyUTXOChangeDigestToLedger( validUTXOChangeDigest, setLedger );
+
+    // Check the balances were updated..
+    expect( L["OPEN1mMTEJpEryi2gBms18kz1renrEfJEMrmWFdTXNkPOLL"] ).to.equal( 40000 );
+
+    done();
+  });
 
 } );
