@@ -24,7 +24,7 @@ interface TransactionHelpers {
 	validateSchema: (data: any) => boolean;
 	hash: (data: any, digestType?: string) => string;
 	validateSignature: (data: any, publicKey?: string) => boolean;
-	sign: (data: any, privateKey: string | Buffer, publicKey: string | buffer) => void;
+	sign: (data: any, privateKey: string | Buffer, publicKey: string | Buffer) => void;
 }
 
 interface OpenPollHelpers {
