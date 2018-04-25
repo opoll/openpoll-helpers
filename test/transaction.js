@@ -24,6 +24,14 @@ describe( 'transaction helper', function() {
     done();
   } );
 
+  it( 'should not validate a transaction with a missing field', function( done ) {
+    var txn = Object.assign( {}, validTransaction );
+    txn.senderAddress = undefined;
+    var valid = tLib.validateSchema( txn );
+    expect( valid ).to.equal(false);
+    done();
+  } );
+
   it( 'properly computes the hash of a transaction', function( done ) {
     var txn = Object.assign( {}, validTransaction );
     txn.hash = undefined;
