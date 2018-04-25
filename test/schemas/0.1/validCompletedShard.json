@@ -1,0 +1,10 @@
+{
+  "pollHash": "f7cfde12f7b3e1bc7887fbbff0b995ecdeca854486d6881391a93cc51d09354d",
+  "totalFunding": 1000000,
+  "responseRewardAddresses": {
+    "OPEN1mMTEJpEryi2gBms18kz1renrEfJEMrmWFdTXNkPOLL": 850000
+  },
+  "minerRewardAddresses": {
+    "OPEN12ATTzuczdozobi6QkEhrqyxnSdRQQCrbbxvRpuYPOLL": 100000
+  }
+}
