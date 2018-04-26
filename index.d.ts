@@ -5,6 +5,9 @@ interface NestedSchemas {
 interface PollHelpers {
 	validateSchema: (data: any) => boolean;
 	isExpired: (data: any) => boolean;
+	generateGenesisBlock: (data: any) => any;
+	getFundingDistribution: (data: any) => any;
+	orderedHashFields: (data: any) => any;
 	hash: (data: any, digestType?: string) => string;
 }
 
