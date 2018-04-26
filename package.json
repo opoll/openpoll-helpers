@@ -1,6 +1,6 @@
 {
   "name": "@openpoll/helpers",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A package containing helper methods for common operations needed for OpenPoll",
   "main": "index.js",
   "typings": "index.d.ts",
