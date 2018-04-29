@@ -138,8 +138,8 @@ lib.orderedHashFields = function( o ) {
 
   // Include demographic information (sort alphabetically by key)
   Object.keys(o.respondentDemographics).sort().forEach((demographic) => {
-    arr.push(demographic);
-    arr.push(o.respondentDemographics[demographics]);
+    // arr.push(demographic);
+    // arr.push(o.respondentDemographics[demographic]);
   });
 
   return arr;
@@ -246,6 +246,8 @@ lib.sign = function( pollResponseObj, privateKeyData, publicKeyData, rewardAddre
 
   sign.update(pollResponseObj.hash);
   pollResponseObj.signature = sign.sign(privateKeyData, "hex");
+
+  return pollResponseObj;
 }
 
 // Export the library
