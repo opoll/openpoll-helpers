@@ -135,5 +135,39 @@ lib.hash = function( poll, digestType = 'hex' ) {
   return poll.hash;
 }
 
+/*
+  Returns an array of hashes corresponding to each question
+*/
+lib.hashQuestions = function (pollQuestions,  digestType = 'hex'){
+  let questionHashes = [];
+
+  pollQuestions.forEach((question) => {
+    // Collect the fields to hash in the question
+    let tempOrderedFieldArr = [];
+
+    tempOrderedFieldArr.push(question.questionType);
+    tempOrderedFieldArr.push(question.label);
+
+    if (question.options) {
+      question.options.forEach((option) => {
+        tempOrderedFieldArr.push(option.key);
+        tempOrderedFieldArr.push(option.value);
+      });
+    }
+
+    if (question.maxSelected) {
+      tempOrderedFieldArr.push(question.maxSelected.toString());
+    }
+
+    // Hash the question using the 'tempOrderedFieldArr' in this specific iteration instance
+    let questionHash = helper_generic.hashFromOrderedFields(tempOrderedFieldArr);
+
+    // Add the question hash to the 'questionHashes' array
+    questionHashes.push(questionHash);
+  });
+
+  return questionHashes;
+}
+
 // Export the library
 module.exports = lib;
