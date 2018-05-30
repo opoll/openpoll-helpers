@@ -9,6 +9,7 @@ interface PollHelpers {
 	getFundingDistribution: (data: any) => any;
 	orderedHashFields: (data: any) => any;
 	hash: (data: any, digestType?: string) => string;
+	hashQuestions: (data: any[], digestType?: string) => string[];
 }
 
 interface PollResponseHelpers {
