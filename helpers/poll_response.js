@@ -174,6 +174,35 @@ lib.hashResponses = function( pollResponseArr, digestType = "hex" ) {
 }
 
 /*
+  Given an array of poll response answers, this function produces an array
+  of hashes corresponding to each question and its resulting hash
+*/
+lib.hashAnswers = function (pollResponseAnswers, digestType = "hex"){
+  let answerHashes = [];
+
+  pollResponseAnswers.forEach((answer) => {
+    // Collect the fields to hash in the answer
+    let tempOrderedFieldArr = [];
+
+    if (Array.isArray(answer)) {
+      answer.forEach((value) => {
+        tempOrderedFieldArr.push(value);
+      });
+    } else {
+      tempOrderedFieldArr.push(answer.toString());
+    }
+
+    // Hash the answer using the 'tempOrderedFieldArr' in this specific iteration instance
+    let answerHash = helper_generic.hashFromOrderedFields(tempOrderedFieldArr);
+
+    // Add the answer hash to the 'answerHashes' array
+    answerHashes.push(answerHash);
+  });
+
+  return answerHashes;
+}
+
+/*
   This function takes a poll response and validates the signature of the
   response corresponds to the public address. This function requires the
   public key of the respondent.

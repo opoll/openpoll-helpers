@@ -18,6 +18,7 @@ interface PollResponseHelpers {
 	hash: (data: any, digestType?: string) => string;
 	validateSignature: (data: any, publicKey?: string) => boolean;
 	sign: (data: any, privateKey: string | Buffer, publicKey: string | Buffer, rewardAddress?: string) => any;
+	hashAnswers: (data: any[], digestType?: string) => string[];
 }
 
 interface OpenPollHelpers {
