@@ -106,18 +106,24 @@ lib.orderedHashFields = function( poll ) {
 
   // Loop through all questions in the poll and include them
   poll.questions.forEach((question) => {
-    arr.push(question.questionType);
+    arr.push(question.type);
     arr.push(question.label);
+
+    Object.keys(question.typeParams).forEach((key) => {
+      arr.push(key);
+      arr.push(question.typeParams[key].toString());
+    });
 
     if (question.options) {
       question.options.forEach((option) => {
         arr.push(option.key);
-        arr.push(option.value);
+        arr.push(option.label);
       });
     }
 
-    if (question.maxSelected) {
-      arr.push(question.maxSelected.toString());
+    if (question.usesAttribute) {
+      arr.push(question.usesAttribute.toString());
+      arr.push((question.negateAttributes || false).toString());
     }
   });
 
@@ -145,18 +151,24 @@ lib.hashQuestions = function (pollQuestions,  digestType = 'hex'){
     // Collect the fields to hash in the question
     let tempOrderedFieldArr = [];
 
-    tempOrderedFieldArr.push(question.questionType);
+    tempOrderedFieldArr.push(question.type);
     tempOrderedFieldArr.push(question.label);
+
+    Object.keys(question.typeParams).forEach((key) => {
+      tempOrderedFieldArr.push(key);
+      tempOrderedFieldArr.push(question.typeParams[key].toString());
+    });
 
     if (question.options) {
       question.options.forEach((option) => {
         tempOrderedFieldArr.push(option.key);
-        tempOrderedFieldArr.push(option.value);
+        tempOrderedFieldArr.push(option.label);
       });
     }
 
-    if (question.maxSelected) {
-      tempOrderedFieldArr.push(question.maxSelected.toString());
+    if (question.usesAttribute) {
+      tempOrderedFieldArr.push(question.usesAttribute.toString());
+      tempOrderedFieldArr.push((question.negateAttributes || false).toString());
     }
 
     // Hash the question using the 'tempOrderedFieldArr' in this specific iteration instance
