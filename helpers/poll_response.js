@@ -137,7 +137,7 @@ lib.orderedHashFields = function( o ) {
   });
 
   // Include demographic information (sort alphabetically by key)
-  Object.keys(o.respondentDemographics).sort().forEach((demographic) => {
+  Object.keys(o.respondentAttributes).sort().forEach((demographic) => {
     // arr.push(demographic);
     // arr.push(o.respondentDemographics[demographic]);
   });
